@@ -36,19 +36,18 @@ export default {
         { name: 'Bob', score: 80 },
         { name: 'Charlie', score: 60 },
       ],
-      isDarkMode: false, // Ajout de la propriété pour le mode sombre
+      isDarkMode: false,
     };
   },
   methods: {
     restartGame() {
       alert('Le jeu redémarre !');
-      // Rediriger vers la page de jeu si nécessaire
     },
     goToSettings() {
       this.$router.push('/settings');
     },
     toggleDarkMode() {
-      this.isDarkMode = !this.isDarkMode; // Basculer entre les modes
+      this.isDarkMode = !this.isDarkMode;
     },
   }
 };
@@ -68,12 +67,12 @@ export default {
   text-align: center;
   margin-top: 13%;
   background-color: #f9f9f9; /* Couleur de fond par défaut (mode clair) */
-  transition: background-color 0.3s, color 0.3s; /* Transition pour le changement de couleur */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .dark {
-  background-color: #333; /* Couleur de fond en mode sombre */
-  color: #f9f9f9; /* Couleur de texte en mode sombre */
+  background-color: #776e65; /* Couleur de fond en mode sombre */
+  color: #f9f9f9;
 }
 
 h1 {
@@ -91,7 +90,7 @@ h1 {
 .btn {
   padding: 10px 20px;
   margin: 0 5px;
-  background-color: #007bff;
+  background-color: #bbada0;
   color: white;
   border: none;
   border-radius: 5px;
@@ -101,16 +100,16 @@ h1 {
 }
 
 .btn:hover {
-  background-color: #0056b3;
+  background-color: #8f7a66;
   transform: translateY(-2px);
 }
 
 .toggle-btn {
-  background-color: #28a745; /* Couleur du bouton toggle */
+  background-color: #8f7a66;
 }
 
 .toggle-btn:hover {
-  background-color: #218838; /* Couleur au survol */
+  background-color: #776e65;
 }
 
 .leaderboard-table {
@@ -125,13 +124,13 @@ h1 {
 }
 
 .leaderboard-table th {
-  background-color: #007bff;
+  background-color: #bbada0;
   color: white;
   font-weight: bold;
 }
 
 .leaderboard-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: rgba(238, 228, 218, 0.35);
 }
 
 .leaderboard-table tr:hover {
@@ -139,14 +138,14 @@ h1 {
 }
 
 .dark .leaderboard-table th {
-  background-color: #0056b3; /* Couleur des en-têtes en mode sombre */
+  background-color: #8f7a66;
 }
 
 .dark .leaderboard-table tr:nth-child(even) {
-  background-color: #444; /* Couleur des lignes paires en mode sombre */
+  background-color: rgba(238, 228, 218, 0.35);
 }
 
 .dark .leaderboard-table tr:hover {
-  background-color: #555; /* Couleur des lignes au survol en mode sombre */
+  background-color: #776e65;
 }
 </style>
