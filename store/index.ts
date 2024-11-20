@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useMainStore = defineStore('main', {
     state: () => ({
         gameType: '',
-        boardSize: '',
+        boardSize: 4,
     }),
 
     actions: {
