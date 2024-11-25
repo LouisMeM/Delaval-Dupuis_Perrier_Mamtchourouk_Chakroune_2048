@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
 
-const gridSize = 5
-const grid = ref([
-    [-1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1],
-]);
-
-let score = ref(0)
-
+const gridSize = 4;
+const grid = ref(
+    Array(gridSize)
+        .fill(null)
+        .map(() => Array(gridSize).fill(-1))
+);
+const score = ref(0);
 const isGameOver = computed(() => {
     if (!isGridFull()) {
         return false;
@@ -31,235 +26,197 @@ const isGameOver = computed(() => {
             }
         }
     }
-
     return true;
-})
+});
 
-// TODO : Implement the score, and ending screen/game over
-
-
-
-// Return true if the grid is full
+// Checks if the grid is full
 function isGridFull() {
-    for (let row of grid.value) {
-        for (let cell of row) {
-            if (cell === -1) {
-                return false
-            }
-        }
-    }
-    return true
+    return grid.value.every((row) => row.every((cell) => cell !== -1));
 }
 
-// Global event moving/fusionning/spawning etc... function
-function MoveCells (event : KeyboardEvent) {
-    const gridCopy = JSON.parse(JSON.stringify(grid.value));
-    if (event.key === 'ArrowUp') {
-        MoveCellsUp()
-    }
-    if (event.key === 'ArrowDown') {
-        MoveCellsDown()
-    }
-    if (event.key === 'ArrowLeft') {
-        MoveCellsLeft()
-    }
-    if (event.key === 'ArrowRight') {
-        MoveCellsRight()
+// Handles global movement logic
+function MoveCells(event : KeyboardEvent) {
+    const gridCopy = JSON.stringify(grid.value);
+
+    switch (event.key) {
+        case 'ArrowUp':
+            MoveCellsUp();
+            break;
+        case 'ArrowDown':
+            MoveCellsDown();
+            break;
+        case 'ArrowLeft':
+            MoveCellsLeft();
+            break;
+        case 'ArrowRight':
+            MoveCellsRight();
+            break;
     }
 
+    ResetEmptyTiles();
 
-    console.log(grid.value)
-
-    ResetEmptyTiles()
-    // If the grid has changed, we spawn a new tile
-    if (JSON.stringify(gridCopy) !== JSON.stringify(grid.value)) {
-        SpawnRandomCell()
+    // Spawn a new cell only if the grid changed
+    if (gridCopy !== JSON.stringify(grid.value)) {
+        SpawnRandomCell();
     }
-
 }
 
-// Reset all tiles, with the current version of Moving/fusioning functions, sometimes empty tiles are not only -1 (sometime -2,-4, etc ...)
-// Because its fusionning empty tiles (NEED TO FIX IT)
+// Ensures all invalid empty cells are reset to -1
 function ResetEmptyTiles() {
-    grid.value.forEach((row ,rowIndex) => {
-        row.forEach((col,colIndex) => {
-            if (col < 0) {
-                grid.value[rowIndex][colIndex] = -1
-            }
-        })
-    })
-}
-
-// Move all the board to the top
-function MoveCellsUp() {
-    for (let colIndex = 0; colIndex < grid.value.length; colIndex++) {
-        for (let rowIndex = 1; rowIndex < grid.value[0].length; rowIndex++){
-            let i = 0
-            while (i < rowIndex) {
-                if (isCellEmpty(grid.value[i][colIndex])){
-                    grid.value[i][colIndex] = grid.value[rowIndex][colIndex]
-                    grid.value[rowIndex][colIndex] = -1
-
-                    // Fusion if the tile has changed position
-                    if (i!==0 && grid.value[i][colIndex] == grid.value[i - 1][colIndex]) {
-                        score.value += grid.value[i - 1][colIndex] * 2
-                        grid.value[i - 1][colIndex] *= 2
-                        grid.value[i][colIndex] = -1
-                    }
-                    break
-                }
-                else {
-                    i++
-                }
-            }
-            if (grid.value[rowIndex][colIndex] == grid.value[rowIndex - 1][colIndex] && grid.value[rowIndex][colIndex] > 0) {
-                score.value += grid.value[i - 1][colIndex] * 2
-                grid.value[rowIndex - 1][colIndex] *= 2
-                grid.value[rowIndex][colIndex] = -1
-            }
-        }
-    }
-}
-
-// Move all the board to the bottom
-function MoveCellsDown() {
-    for (let colIndex = 0; colIndex < grid.value.length; colIndex++) {
-        for (let rowIndex = grid.value[0].length -2; rowIndex >= 0; rowIndex--){
-            let i = grid.value.length - 1
-            while (i > rowIndex) {
-                if (isCellEmpty(grid.value[i][colIndex])){
-                    grid.value[i][colIndex] = grid.value[rowIndex][colIndex]
-                    grid.value[rowIndex][colIndex] = -1
-
-                    // Fusion if the tile has changed position
-                    if (i!==grid.value.length -1 && grid.value[i][colIndex] == grid.value[i + 1][colIndex]) {
-                        score.value += grid.value[i + 1][colIndex] * 2
-                        grid.value[i + 1][colIndex] *= 2
-                        grid.value[i][colIndex] = -1
-                    }
-                    break
-                }
-                else {
-                    i--
-                }
-            }
-            if (grid.value[rowIndex][colIndex] == grid.value[rowIndex + 1][colIndex] && grid.value[rowIndex][colIndex] > 0) {
-                score.value += grid.value[i + 1][colIndex] * 2
-                grid.value[rowIndex + 1][colIndex] *= 2
-                grid.value[rowIndex][colIndex] = -1
-            }
-        }
-    }
-}
-
-// Move all the board to the left
-function MoveCellsLeft() {
-    grid.value.forEach((row, rowIndex) => {
-        // colIndex = 1, we don't need trying to move the first cell on the left
-        for (let colIndex = 1; colIndex <= row.length -1; colIndex++ ) {
-            let i  = 0
-            while (i < colIndex) {
-                if (isCellEmpty(row[i])) {
-                    row[i] = row[colIndex]
-                    row[colIndex] = -1
-
-                    // Fusion if the tile has changed position
-                    if (grid.value[rowIndex][i] == grid.value[rowIndex][i - 1]) {
-                        score.value += grid.value[rowIndex][i - 1] * 2
-                        grid.value[rowIndex][i - 1] *= 2
-                        grid.value[rowIndex][i] = -1
-                    }
-                    break
-                }
-                else {
-                    i++
-                }
-            }
-            // Fusion cells if the cells on the right is the same
-            if (grid.value[rowIndex][colIndex] == grid.value[rowIndex][colIndex - 1] && grid.value[rowIndex][colIndex] > 0) {
-                score.value += grid.value[rowIndex][i - 1] * 2
-                grid.value[rowIndex][colIndex - 1] *= 2
-                grid.value[rowIndex][colIndex] = -1
-            }
-        }
-    })
-}
-
-// Move all the board to the right
-function MoveCellsRight() {
-    grid.value.forEach((row, rowIndex) => {
-        // row.lenght -2, we don't need trying to move the last cell on the right
-        for (let colIndex = row.length - 2; colIndex >= 0; colIndex--) {
-            let i  = row.length - 1
-            while (i > colIndex) {
-                if (isCellEmpty(row[i])) {
-                    row[i] = row[colIndex]
-                    row[colIndex] = -1
-
-                    // Fusion if the tile has changed position
-                    if (grid.value[rowIndex][i] == grid.value[rowIndex][i + 1]) {
-                        score.value += grid.value[rowIndex][i + 1] *2
-                        grid.value[rowIndex][i + 1] *= 2
-                        grid.value[rowIndex][i] = -1
-                    }
-                    break
-                }
-                else {
-                    i--
-                }
-            }
-            // Fusion cells if the cells on the right is the same
-            if (grid.value[rowIndex][colIndex] == grid.value[rowIndex][colIndex + 1] && grid.value[rowIndex][colIndex] > 0) {
-                score.value += grid.value[rowIndex][i + 1] * 2
-                grid.value[rowIndex][colIndex + 1] *= 2
-                grid.value[rowIndex][colIndex] = -1
-            }
-        }
-    })
-}
-
-//Return true if a tile is empty (equal to -1)
-function isCellEmpty(cellValue : number) {
-    return cellValue < 0
-}
-
-// Function to start/restart a game
-function StartGame() {
     grid.value.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
-            grid.value[rowIndex][colIndex] = -1
-        })
-    })
-    SpawnRandomCell()
-    SpawnRandomCell()
+            if (col < 0) {
+                grid.value[rowIndex][colIndex] = -1;
+            }
+        });
+    });
 }
 
-// Spawn a random tile on an empty spot
-function SpawnRandomCell() {
-    if (isGridFull()) { return }
+// Moves tiles up
+function MoveCellsUp() {
+    for (let col = 0; col < gridSize; col++) {
+        for (let row = 1; row < gridSize; row++) {
+            if (grid.value[row][col] !== -1) {
+                let target = row;
+                while (target > 0 && grid.value[target - 1][col] === -1) {
+                    grid.value[target - 1][col] = grid.value[target][col];
+                    grid.value[target][col] = -1;
+                    target--;
+                }
 
-    let randomRow, randomCol;
-    do {
-        randomRow = Math.floor(Math.random() * 4)
-        randomCol = Math.floor(Math.random() * 4)
-    } while (grid.value[randomRow][randomCol] !== -1 && !isGridFull())
-
-    grid.value[randomRow][randomCol] = Math.random() < 0.9 ? 2 : 4
-}
-
-function HandleKeyPress (event: KeyboardEvent) {
-    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && isGameOver) {
-        return
+                if (
+                    target > 0 &&
+                    grid.value[target - 1][col] === grid.value[target][col]
+                ) {
+                    score.value += grid.value[target - 1][col] * 2;
+                    grid.value[target - 1][col] *= 2;
+                    grid.value[target][col] = -1;
+                }
+            }
+        }
     }
-    MoveCells(event)
+}
+
+// Moves tiles down
+function MoveCellsDown() {
+    for (let col = 0; col < gridSize; col++) {
+        for (let row = gridSize - 2; row >= 0; row--) {
+            if (grid.value[row][col] !== -1) {
+                let target = row;
+                while (target < gridSize - 1 && grid.value[target + 1][col] === -1) {
+                    grid.value[target + 1][col] = grid.value[target][col];
+                    grid.value[target][col] = -1;
+                    target++;
+                }
+
+                if (
+                    target < gridSize - 1 &&
+                    grid.value[target + 1][col] === grid.value[target][col]
+                ) {
+                    score.value += grid.value[target + 1][col] * 2;
+                    grid.value[target + 1][col] *= 2;
+                    grid.value[target][col] = -1;
+                }
+            }
+        }
+    }
+}
+
+// Moves tiles left
+function MoveCellsLeft() {
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = 1; col < gridSize; col++) {
+            if (grid.value[row][col] !== -1) {
+                let target = col;
+                while (target > 0 && grid.value[row][target - 1] === -1) {
+                    grid.value[row][target - 1] = grid.value[row][target];
+                    grid.value[row][target] = -1;
+                    target--;
+                }
+
+                if (
+                    target > 0 &&
+                    grid.value[row][target - 1] === grid.value[row][target]
+                ) {
+                    score.value += grid.value[row][target - 1] * 2;
+                    grid.value[row][target - 1] *= 2;
+                    grid.value[row][target] = -1;
+                }
+            }
+        }
+    }
+}
+
+// Moves tiles right
+function MoveCellsRight() {
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = gridSize - 2; col >= 0; col--) {
+            if (grid.value[row][col] !== -1) {
+                let target = col;
+                while (target < gridSize - 1 && grid.value[row][target + 1] === -1) {
+                    grid.value[row][target + 1] = grid.value[row][target];
+                    grid.value[row][target] = -1;
+                    target++;
+                }
+
+                if (
+                    target < gridSize - 1 &&
+                    grid.value[row][target + 1] === grid.value[row][target]
+                ) {
+                    score.value += grid.value[row][target + 1] * 2;
+                    grid.value[row][target + 1] *= 2;
+                    grid.value[row][target] = -1;
+                }
+            }
+        }
+    }
+}
+
+// Starts or restarts the game
+function StartGame() {
+    grid.value = Array(gridSize)
+        .fill(null)
+        .map(() => Array(gridSize).fill(-1));
+    score.value = 0;
+    SpawnRandomCell();
+    SpawnRandomCell();
+}
+
+// Spawns a random tile
+function SpawnRandomCell() {
+    if (isGridFull()) return;
+    let emptyCells: any[] = [];
+
+    grid.value.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+            if (cell === -1) {
+                emptyCells.push({ rowIndex, colIndex });
+            }
+        });
+    });
+
+    const randomCell =
+        emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    grid.value[randomCell.rowIndex][randomCell.colIndex] =
+        Math.random() < 0.9 ? 2 : 4;
+}
+
+function HandleKeyPress(event: KeyboardEvent) {
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        return;
+    }
+    if (isGameOver.value) {
+        return;
+    }
+    MoveCells(event);
 }
 
 onMounted(() => {
-    console.log('mounted')
-    window.addEventListener('keydown', HandleKeyPress)
-    StartGame()
-})
+    window.addEventListener('keydown', HandleKeyPress);
+    StartGame();
+});
 </script>
+
 
 <template>
     <div class="container u-flex u-flex-direction-column u-align-items-center u-justify-content-center u-gap10">
@@ -272,7 +229,9 @@ onMounted(() => {
             </div>
             <div class="tile-container">
                 <div v-for="(tile, index) in grid.flat()" :key="index">
-                    <div v-if="tile > -1" :class="`tile tile-color-${tile} tile-position-${Math.floor(index / gridSize )}-${index % gridSize}`">{{ tile }}</div>
+                    <div :class="`tile-position-${Math.floor(index / gridSize )}-${index % gridSize}`">
+                        <div v-if="tile > -1" :class="`tile tile-color-${tile}`">{{ tile }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -316,6 +275,7 @@ onMounted(() => {
 
 }
 .grid-container {
+    transform: scale(1);
     background-color: #bbada0;
 
     .grid-cell {

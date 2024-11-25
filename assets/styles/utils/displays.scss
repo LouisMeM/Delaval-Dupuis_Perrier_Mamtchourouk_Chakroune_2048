@@ -6,8 +6,8 @@ $tile-size: 130px;
 
 
 
-@for $row from 0 through 4 {
-    @for $col from 0 through 4 {
+@for $row from 0 through 6 {
+    @for $col from 0 through 6 {
         .tile-position-#{$row}-#{$col} {
             transform: translate(#{$col * $tile-size}, #{$row * $tile-size});
             transition: transform 0.3s;
