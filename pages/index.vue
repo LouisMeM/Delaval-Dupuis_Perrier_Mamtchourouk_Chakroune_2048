@@ -120,7 +120,7 @@ h2 {
   font-size: 2.5vw;
 }
 
-.beige-button, .red-button {
+.beige-button {
     color: black;
     border: none;
     padding: 10px 20px;
@@ -133,10 +133,6 @@ h2 {
     background-color: #bbada0;
 
     }
-
-.red-button {
-  background-color: red;
-}
 
 input, select {
   font-size: 1.5vw;
@@ -167,7 +163,7 @@ input, select {
     font-size: 20px;
   }
 
-  .beige-button, .red-button {
+  .beige-button {
     font-size: 16px;
     padding: 8px 16px;
   }
@@ -185,7 +181,7 @@ input, select {
     font-size: 16px;
   }
 
-  .beige-button, .red-button {
+  .beige-button {
     font-size: 14px;
     padding: 6px 12px;
   }
