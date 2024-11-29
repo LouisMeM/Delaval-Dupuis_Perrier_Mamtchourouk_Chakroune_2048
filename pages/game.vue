@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 
+import {useMainStore} from "~/store";
+
+const store = useMainStore();
+
+const boardSize = computed(() => store.boardSize);
+const gameType = computed(() => store.gameType);
 const gridSize = 4;
 const grid = ref(
     Array(gridSize)
@@ -218,6 +224,11 @@ onMounted(() => {
 </script>
 
 
+<<<<<<< HEAD
+    <p v-html="boardSize"></p>
+    <p v-html="gameType"></p>
+
+=======
 <template>
     <div class="container u-flex u-flex-direction-column u-align-items-center u-justify-content-center u-gap10">
         <div class="game-score">
@@ -240,6 +251,7 @@ onMounted(() => {
             <button @click="StartGame">Play again</button>
         </div>
     </div>
+>>>>>>> 7473ded60b3143853de5868e94f782de9ae0ecd3
 </template>
 
 <style scoped lang="scss">
