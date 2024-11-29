@@ -2,7 +2,7 @@
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMainStore } from '@/store/index';
+import { useMainStore } from '~/store';
 
 const router = useRouter();
 const store = useMainStore();
