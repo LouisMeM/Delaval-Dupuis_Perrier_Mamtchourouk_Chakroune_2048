@@ -3,6 +3,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '~/store';
+import { onMounted } from 'vue';
 
 const router = useRouter();
 const store = useMainStore();
@@ -11,8 +12,8 @@ const gameType = ref('2048');
 const boardSize = ref(4);
 
 onMounted(() => {
-  const btn2048 = document.getElementById('2048');
-  const btn4x4 = document.getElementById('4x4');
+    const btn2048 = document.getElementById('2048') as HTMLInputElement;
+    const btn4x4 = document.getElementById('4x4') as HTMLInputElement;
 
     btn2048.checked = true;
     btn4x4.checked = true;
