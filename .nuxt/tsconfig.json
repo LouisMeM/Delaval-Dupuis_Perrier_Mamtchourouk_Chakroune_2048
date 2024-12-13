@@ -2,9 +2,6 @@
 {
   "compilerOptions": {
     "paths": {
-      "nitropack/types": [
-        "../node_modules/nitropack/types"
-      ],
       "nitropack": [
         "../node_modules/nitropack"
       ],
@@ -23,17 +20,14 @@
       "@unhead/vue": [
         "../node_modules/@unhead/vue"
       ],
-      "@nuxt/devtools": [
-        "../node_modules/@nuxt/devtools"
-      ],
       "@vue/runtime-core": [
         "../node_modules/@vue/runtime-core"
       ],
       "@vue/compiler-sfc": [
         "../node_modules/@vue/compiler-sfc"
       ],
-      "unplugin-vue-router/client": [
-        "../node_modules/unplugin-vue-router/client"
+      "@vue/runtime-dom": [
+        "../node_modules/@vue/runtime-dom"
       ],
       "@nuxt/schema": [
         "../node_modules/@nuxt/schema"
@@ -65,9 +59,6 @@
       "@@/*": [
         "../*"
       ],
-      "#shared": [
-        "../shared"
-      ],
       "assets": [
         "../assets"
       ],
@@ -79,12 +70,6 @@
       ],
       "public/*": [
         "../public/*"
-      ],
-      "#build": [
-        "."
-      ],
-      "#build/*": [
-        "./*"
       ],
       "#app": [
         "../node_modules/nuxt/dist/app"
@@ -99,44 +84,41 @@
         "../node_modules/pinia/dist/pinia"
       ],
       "#vue-router": [
-        "../node_modules/vue-router"
+        "./vue-router-stub"
       ],
       "#imports": [
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev.json"
+        "./manifest/meta/dev"
+      ],
+      "#build": [
+        "."
+      ],
+      "#build/*": [
+        "./*"
       ],
       "#components": [
         "./components"
       ]
     },
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "ESNext",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": false,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitOverride": true,
-    "module": "preserve",
-    "noEmit": true,
-    "lib": [
-      "ESNext",
-      "dom",
-      "dom.iterable",
-      "webworker"
-    ],
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "types": [],
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "isolatedModules": true,
     "useDefineForClassFields": true,
+    "strict": true,
     "noImplicitThis": true,
+    "esModuleInterop": true,
+    "types": [],
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },
   "include": [
@@ -144,29 +126,15 @@
     "../.config/nuxt.*",
     "../**/*",
     "../node_modules/@pinia/nuxt/runtime",
-<<<<<<< HEAD
-    "../node_modules/@pinia/nuxt/dist/runtime",
-    "../node_modules/@nuxt/devtools/runtime",
-    "../node_modules/@nuxt/devtools/dist/runtime",
-=======
->>>>>>> 7473ded60b3143853de5868e94f782de9ae0ecd3
     "../node_modules/@nuxt/telemetry/runtime",
-    "../node_modules/@nuxt/telemetry/dist/runtime",
     ".."
   ],
   "exclude": [
-    "../dist",
     "../node_modules",
     "../node_modules/nuxt/node_modules",
     "../node_modules/@pinia/nuxt/runtime/server",
-<<<<<<< HEAD
-    "../node_modules/@pinia/nuxt/dist/runtime/server",
-    "../node_modules/@nuxt/devtools/runtime/server",
-    "../node_modules/@nuxt/devtools/dist/runtime/server",
-=======
->>>>>>> 7473ded60b3143853de5868e94f782de9ae0ecd3
     "../node_modules/@nuxt/telemetry/runtime/server",
-    "../node_modules/@nuxt/telemetry/dist/runtime/server",
+    "../dist",
     "../.output"
   ]
 }

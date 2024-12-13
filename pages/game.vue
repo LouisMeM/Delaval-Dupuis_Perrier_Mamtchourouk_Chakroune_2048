@@ -2,18 +2,20 @@
 import { ref, onMounted, computed } from 'vue';
 
 import {useMainStore} from "~/store";
+import Timer from 'easytimer.js';
 
 const store = useMainStore();
 
-const boardSize = computed(() => store.boardSize);
 const gameType = computed(() => store.gameType);
-const gridSize = 4;
+const gridSize = store.boardSize;
 const grid = ref(
     Array(gridSize)
         .fill(null)
         .map(() => Array(gridSize).fill(-1))
 );
 const score = ref(0);
+let time = '00:00:00';
+
 const isGameOver = computed(() => {
     if (!isGridFull()) {
         return false;
@@ -34,6 +36,7 @@ const isGameOver = computed(() => {
     }
     return true;
 });
+
 
 // Checks if the grid is full
 function isGridFull() {
@@ -224,17 +227,14 @@ onMounted(() => {
 </script>
 
 
-<<<<<<< HEAD
-    <p v-html="boardSize"></p>
-    <p v-html="gameType"></p>
-
-=======
 <template>
-    <div class="container u-flex u-flex-direction-column u-align-items-center u-justify-content-center u-gap10">
-        <div class="game-score">
-            <p>Score : {{ score }}</p>
+    <div class="container u-flex u-align-items-center u-justify-content-center u-gap10">
+        <div class="game-statut u-p20">
+            <p class="game-score">Score : {{ score }}</p>
+            <p class="game-timer">{{ time }}</p>
+            <p class="game-timer">Gamemode : 2048</p>
         </div>
-        <div class="grid-container u-flex u-flex-direction-column u-p15 u-gap15">
+        <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
             <div class="u-flex u-gap15" v-for="rows in grid">
                 <div class="grid-cell" v-for="cell in rows"></div>
             </div>
@@ -251,7 +251,6 @@ onMounted(() => {
             <button @click="StartGame">Play again</button>
         </div>
     </div>
->>>>>>> 7473ded60b3143853de5868e94f782de9ae0ecd3
 </template>
 
 <style scoped lang="scss">
@@ -260,10 +259,10 @@ onMounted(() => {
     width: 100vw;
     height: 100vh;
 
-    .game-score {
-        padding: 15px 50px;
-        border: 1px solid black;
+    .game-statut {
+
         border-radius: 5px;
+        border: 1px solid black;
     }
 
 
@@ -287,7 +286,6 @@ onMounted(() => {
 
 }
 .grid-container {
-    transform: scale(1);
     background-color: #bbada0;
 
     .grid-cell {
@@ -309,5 +307,22 @@ onMounted(() => {
             font-size: 30px;
         }
     }
+}
+
+
+.grid-scale-4 {
+    transform: scale(1);
+}
+
+.grid-scale-5 {
+    transform: scale(0.9);
+}
+
+.grid-scale-6 {
+    transform: scale(0.8);
+}
+
+.grid-scale-7 {
+    transform: scale(0.7);
 }
 </style>
