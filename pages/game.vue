@@ -3,6 +3,9 @@ import { ref, onMounted, computed } from 'vue';
 
 import {useMainStore} from "~/store";
 import Timer from 'easytimer.js';
+const timer = new Timer();
+const timerValue = ref('00:00:00');
+
 
 const store = useMainStore();
 
@@ -14,7 +17,6 @@ const grid = ref(
         .map(() => Array(gridSize).fill(-1))
 );
 const score = ref(0);
-let time = '00:00:00';
 
 const isGameOver = computed(() => {
     if (!isGridFull()) {
@@ -34,6 +36,7 @@ const isGameOver = computed(() => {
             }
         }
     }
+    timer.stop();
     return true;
 });
 
@@ -189,6 +192,10 @@ function StartGame() {
     score.value = 0;
     SpawnRandomCell();
     SpawnRandomCell();
+    timer.start();
+    timer.addEventListener('secondsUpdated', function (e) {
+        timerValue.value = timer.getTimeValues().toString();
+    });
 }
 
 // Spawns a random tile
@@ -204,10 +211,8 @@ function SpawnRandomCell() {
         });
     });
 
-    const randomCell =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    grid.value[randomCell.rowIndex][randomCell.colIndex] =
-        Math.random() < 0.9 ? 2 : 4;
+    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    grid.value[randomCell.rowIndex][randomCell.colIndex] = Math.random() < 0.9 ? 2 : 4;
 }
 
 function HandleKeyPress(event: KeyboardEvent) {
@@ -231,7 +236,7 @@ onMounted(() => {
     <div class="container u-flex u-align-items-center u-justify-content-center u-gap10">
         <div class="game-statut u-p20">
             <p class="game-score">Score : {{ score }}</p>
-            <p class="game-timer">{{ time }}</p>
+            <p class="game-timer">{{timerValue}}</p>
             <p class="game-timer">Gamemode : 2048</p>
         </div>
         <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
