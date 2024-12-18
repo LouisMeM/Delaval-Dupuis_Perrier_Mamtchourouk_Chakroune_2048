@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"id":"dev","timestamp":1734540398002,"matcher":{"static":{},"wildcard":{},"dynamic":{}},"prerendered":[]}
+=======
+{"id":"dev","timestamp":1734110324990,"matcher":{"static":{},"wildcard":{},"dynamic":{}},"prerendered":[]}
+>>>>>>> origin/gameStatus
