@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "date": "2024-12-18T16:47:29.925Z",
-=======
-  "date": "2024-12-13T17:19:19.856Z",
->>>>>>> origin/gameStatus
+  "date": "2024-12-18T17:00:01.597Z",
   "preset": "nitro-dev",
   "framework": {
     "name": "nuxt",
@@ -13,15 +9,9 @@
     "nitro": "2.9.6"
   },
   "dev": {
-<<<<<<< HEAD
     "pid": 9616,
     "workerAddress": {
-      "socketPath": "\\\\.\\pipe\\nitro\\worker-9616-1.sock"
-=======
-    "pid": 2128,
-    "workerAddress": {
-      "socketPath": "\\\\.\\pipe\\nitro\\worker-2128-1.sock"
->>>>>>> origin/gameStatus
+      "socketPath": "\\\\.\\pipe\\nitro\\worker-9616-3.sock"
     }
   }
 }

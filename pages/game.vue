@@ -3,12 +3,10 @@ import { ref, onMounted, computed } from 'vue';
 
 import {useMainStore} from "~/store";
 import Timer from 'easytimer.js';
-<<<<<<< HEAD
+
 const timer = new Timer();
 const timerValue = ref('00:00:00');
 
-=======
->>>>>>> origin/gameStatus
 
 const store = useMainStore();
 
@@ -20,10 +18,6 @@ const grid = ref(
         .map(() => Array(gridSize).fill(-1))
 );
 const score = ref(0);
-<<<<<<< HEAD
-=======
-let time = '00:00:00';
->>>>>>> origin/gameStatus
 
 const isGameOver = computed(() => {
     if (!isGridFull()) {
@@ -243,11 +237,7 @@ onMounted(() => {
     <div class="container u-flex u-align-items-center u-justify-content-center u-gap10">
         <div class="game-statut u-p20">
             <p class="game-score">Score : {{ score }}</p>
-<<<<<<< HEAD
             <p class="game-timer">{{timerValue}}</p>
-=======
-            <p class="game-timer">{{ time }}</p>
->>>>>>> origin/gameStatus
             <p class="game-timer">Gamemode : 2048</p>
         </div>
         <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
@@ -276,7 +266,6 @@ onMounted(() => {
     height: 100vh;
 
     .game-statut {
-
         border-radius: 5px;
         border: 1px solid black;
     }
@@ -299,7 +288,6 @@ onMounted(() => {
             cursor: pointer;
         }
     }
-
 }
 .grid-container {
     background-color: #bbada0;
