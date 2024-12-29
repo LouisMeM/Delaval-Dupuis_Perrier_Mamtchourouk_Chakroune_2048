@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 
-import {useMainStore} from "~/store";
+import {useMainStore} from "../store";
 import Timer from 'easytimer.js';
 
 const timer = new Timer();

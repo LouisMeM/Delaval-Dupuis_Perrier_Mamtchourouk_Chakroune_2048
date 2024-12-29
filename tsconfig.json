@@ -7,6 +7,6 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
-    "types": ["jest", "node"]
+    "types": ["vitest/globals", "node"]
   }
 }
