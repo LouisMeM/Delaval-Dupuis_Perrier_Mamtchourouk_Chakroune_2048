@@ -2,18 +2,23 @@
 import { ref, onMounted, computed } from 'vue';
 
 import {useMainStore} from "~/store";
+import Timer from 'easytimer.js';
+
+const timer = new Timer();
+const timerValue = ref('00:00:00');
+
 
 const store = useMainStore();
 
-const boardSize = computed(() => store.boardSize);
 const gameType = computed(() => store.gameType);
-const gridSize = 4;
+const gridSize = store.boardSize;
 const grid = ref(
     Array(gridSize)
         .fill(null)
         .map(() => Array(gridSize).fill(-1))
 );
 const score = ref(0);
+
 const isGameOver = computed(() => {
     if (!isGridFull()) {
         return false;
@@ -22,6 +27,10 @@ const isGameOver = computed(() => {
     for (let rowIndex = 0; rowIndex < grid.value.length; rowIndex++) {
         for (let colIndex = 0; colIndex < grid.value[rowIndex].length; colIndex++) {
             const cell = grid.value[rowIndex][colIndex];
+            if (gameType.value === '2048' && cell === 2048) {
+                timer.stop();
+                return true;
+            }
             if (
                 (rowIndex > 0 && cell === grid.value[rowIndex - 1][colIndex]) || // Check above
                 (rowIndex < grid.value.length - 1 && cell === grid.value[rowIndex + 1][colIndex]) || // Check below
@@ -32,8 +41,10 @@ const isGameOver = computed(() => {
             }
         }
     }
+    timer.stop();
     return true;
 });
+
 
 // Checks if the grid is full
 function isGridFull() {
@@ -90,10 +101,8 @@ function MoveCellsUp() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[target - 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[target - 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target - 1][col] * 2;
                     grid.value[target - 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -115,10 +124,8 @@ function MoveCellsDown() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[target + 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[target + 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target + 1][col] * 2;
                     grid.value[target + 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -140,10 +147,8 @@ function MoveCellsLeft() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[row][target - 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[row][target - 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target - 1] * 2;
                     grid.value[row][target - 1] *= 2;
                     grid.value[row][target] = -1;
@@ -165,10 +170,8 @@ function MoveCellsRight() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[row][target + 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[row][target + 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target + 1] * 2;
                     grid.value[row][target + 1] *= 2;
                     grid.value[row][target] = -1;
@@ -186,6 +189,12 @@ function StartGame() {
     score.value = 0;
     SpawnRandomCell();
     SpawnRandomCell();
+
+    // Timer
+    timer.start();
+    timer.addEventListener('secondsUpdated', function (e) {
+        timerValue.value = timer.getTimeValues().toString();
+    });
 }
 
 // Spawns a random tile
@@ -201,10 +210,8 @@ function SpawnRandomCell() {
         });
     });
 
-    const randomCell =
-        emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    grid.value[randomCell.rowIndex][randomCell.colIndex] =
-        Math.random() < 0.9 ? 2 : 4;
+    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    grid.value[randomCell.rowIndex][randomCell.colIndex] = Math.random() < 0.9 ? 2 : 4;
 }
 
 function HandleKeyPress(event: KeyboardEvent) {
@@ -224,17 +231,14 @@ onMounted(() => {
 </script>
 
 
-<<<<<<< HEAD
-    <p v-html="boardSize"></p>
-    <p v-html="gameType"></p>
-
-=======
 <template>
-    <div class="container u-flex u-flex-direction-column u-align-items-center u-justify-content-center u-gap10">
-        <div class="game-score">
-            <p>Score : {{ score }}</p>
+    <div class="container u-flex u-align-items-center u-justify-content-center u-gap10">
+        <div class="game-statut u-p20">
+            <p class="game-score">Score : {{ score }}</p>
+            <p class="game-timer">{{timerValue}}</p>
+            <p class="game-timer">Gamemode : {{gameType}}</p>
         </div>
-        <div class="grid-container u-flex u-flex-direction-column u-p15 u-gap15">
+        <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
             <div class="u-flex u-gap15" v-for="rows in grid">
                 <div class="grid-cell" v-for="cell in rows"></div>
             </div>
@@ -246,48 +250,83 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
         <div v-if="isGameOver" class="game-over-window u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-noselect">
-            <p>Game over !</p>
-            <button @click="StartGame">Play again</button>
+            <div class="u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-gap5">
+                <p>Partie terminée !</p>
+                <button @click="StartGame">Rejouer</button>
+                <button @click="$router.push('/')">Menu</button>
+            </div>
         </div>
+
+        <div class="back-to-menu-button u-noselect" @click="$router.push('/')">Retourner au menu</div>
     </div>
->>>>>>> 7473ded60b3143853de5868e94f782de9ae0ecd3
 </template>
 
 <style scoped lang="scss">
+
+
 .container {
     position: relative;
     width: 100vw;
     height: 100vh;
 
-    .game-score {
-        padding: 15px 50px;
-        border: 1px solid black;
+    .back-to-menu-button{
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        padding: 5px 10px;
         border-radius: 5px;
+        transition: background-color 0.3s;
+        background-color: #8f7a66;
+    }
+
+
+    .game-statut {
+        border-radius: 5px;
+        border: 1px solid black;
     }
 
 
     .game-over-window {
+        background-color: rgba(0, 0, 0, 0.5);
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 75px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
 
-        p {
-            font-size: 40px;
-        }
+        div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #bbada0;
+            border-radius: 5px;
+            padding: 60px 75px;
 
-        button {
-            font-size: 16px;
-            cursor: pointer;
+            p {
+                font-size: 32px;
+                text-transform: uppercase;
+            }
+
+            button {
+                font-size: 18px;
+                margin-top: 10px;
+                cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #8f7a66;
+                }
+            }
         }
     }
-
 }
 .grid-container {
-    transform: scale(1);
     background-color: #bbada0;
 
     .grid-cell {
@@ -309,5 +348,22 @@ onMounted(() => {
             font-size: 30px;
         }
     }
+}
+
+
+.grid-scale-4 {
+    transform: scale(1);
+}
+
+.grid-scale-5 {
+    transform: scale(0.9);
+}
+
+.grid-scale-6 {
+    transform: scale(0.8);
+}
+
+.grid-scale-7 {
+    transform: scale(0.7);
 }
 </style>
