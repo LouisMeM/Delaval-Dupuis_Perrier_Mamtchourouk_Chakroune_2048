@@ -1,35 +1,25 @@
-<script setup lang="ts">
-
+<<script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '../store';
-import { onMounted } from 'vue';
 
 const router = useRouter();
 const store = useMainStore();
 
-const gameType = ref('2048');
-const boardSize = ref(4);
+// Valeurs par défaut pour le type de jeu et la taille du plateau
+const gameType = ref('2048'); // '2048' sélectionné par défaut
+const boardSize = ref(4); // '4x4' sélectionné par défaut
 
-onMounted(() => {
-    const btn2048 = document.getElementById('2048') as HTMLInputElement;
-    const btn4x4 = document.getElementById('4x4') as HTMLInputElement;
-
-    btn2048.checked = true;
-    btn4x4.checked = true;
-});
-
-// enregistre les paramètres du jeu
+// Enregistre les paramètres du jeu
 const handleSubmit = () => {
-  store.updateGameSettings({
-    gameType: gameType.value,
-    boardSize: boardSize.value,
-  });
+    store.updateGameSettings({
+        gameType: gameType.value,
+        boardSize: boardSize.value,
+    });
     console.log(store.boardSize);
-  // redirige vers la page du jeu
-  router.push('/game');
+    // Redirige vers la page du jeu
+    router.push('/game');
 };
-
 </script>
 
 <template>

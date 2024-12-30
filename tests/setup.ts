@@ -1,8 +1,6 @@
-import { vi } from 'vitest';
 import { createPinia } from 'pinia';
 import { config } from '@vue/test-utils';
-import { mount } from '@vue/test-utils';
-import { createApp } from 'vue';
+
 
 // Créer un Pinia
 const pinia = createPinia();
