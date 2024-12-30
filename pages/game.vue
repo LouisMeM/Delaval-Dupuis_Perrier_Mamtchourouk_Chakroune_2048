@@ -27,6 +27,10 @@ const isGameOver = computed(() => {
     for (let rowIndex = 0; rowIndex < grid.value.length; rowIndex++) {
         for (let colIndex = 0; colIndex < grid.value[rowIndex].length; colIndex++) {
             const cell = grid.value[rowIndex][colIndex];
+            if (gameType.value === '2048' && cell === 2048) {
+                timer.stop();
+                return true;
+            }
             if (
                 (rowIndex > 0 && cell === grid.value[rowIndex - 1][colIndex]) || // Check above
                 (rowIndex < grid.value.length - 1 && cell === grid.value[rowIndex + 1][colIndex]) || // Check below
@@ -97,10 +101,8 @@ function MoveCellsUp() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[target - 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[target - 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target - 1][col] * 2;
                     grid.value[target - 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -122,10 +124,8 @@ function MoveCellsDown() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[target + 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[target + 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target + 1][col] * 2;
                     grid.value[target + 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -147,10 +147,8 @@ function MoveCellsLeft() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[row][target - 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[row][target - 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target - 1] * 2;
                     grid.value[row][target - 1] *= 2;
                     grid.value[row][target] = -1;
@@ -172,10 +170,8 @@ function MoveCellsRight() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[row][target + 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[row][target + 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target + 1] * 2;
                     grid.value[row][target + 1] *= 2;
                     grid.value[row][target] = -1;
@@ -193,6 +189,8 @@ function StartGame() {
     score.value = 0;
     SpawnRandomCell();
     SpawnRandomCell();
+
+    // Timer
     timer.start();
     timer.addEventListener('secondsUpdated', function (e) {
         timerValue.value = timer.getTimeValues().toString();
@@ -238,7 +236,7 @@ onMounted(() => {
         <div class="game-statut u-p20">
             <p class="game-score">Score : {{ score }}</p>
             <p class="game-timer">{{timerValue}}</p>
-            <p class="game-timer">Gamemode : 2048</p>
+            <p class="game-timer">Gamemode : {{gameType}}</p>
         </div>
         <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
             <div class="u-flex u-gap15" v-for="rows in grid">
@@ -252,18 +250,38 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
         <div v-if="isGameOver" class="game-over-window u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-noselect">
-            <p>Game over !</p>
-            <button @click="StartGame">Play again</button>
+            <div class="u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-gap5">
+                <p>Partie terminée !</p>
+                <button @click="StartGame">Rejouer</button>
+                <button @click="$router.push('/')">Menu</button>
+            </div>
         </div>
+
+        <div class="back-to-menu-button u-noselect" @click="$router.push('/')">Retourner au menu</div>
     </div>
 </template>
 
 <style scoped lang="scss">
+
+
 .container {
     position: relative;
     width: 100vw;
     height: 100vh;
+
+    .back-to-menu-button{
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        background-color: #8f7a66;
+    }
+
 
     .game-statut {
         border-radius: 5px;
@@ -272,20 +290,39 @@ onMounted(() => {
 
 
     .game-over-window {
+        background-color: rgba(0, 0, 0, 0.5);
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 75px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
 
-        p {
-            font-size: 40px;
-        }
+        div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #bbada0;
+            border-radius: 5px;
+            padding: 60px 75px;
 
-        button {
-            font-size: 16px;
-            cursor: pointer;
+            p {
+                font-size: 32px;
+                text-transform: uppercase;
+            }
+
+            button {
+                font-size: 18px;
+                margin-top: 10px;
+                cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #8f7a66;
+                }
+            }
         }
     }
 }
