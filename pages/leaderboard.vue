@@ -1,5 +1,6 @@
 <script>
 import Papa from 'papaparse';
+import router from "#app/plugins/router.js";
 
 export default {
   // Composant Vue pour la gestion des joueurs et des scores
@@ -47,6 +48,7 @@ export default {
   },
 
   methods: {
+      router,
     restartGame() {
       alert('Le jeu redémarre !');
     },
@@ -125,8 +127,7 @@ export default {
   <div :class="['leaderboard-container', { dark: isDarkMode }]">
 
     <div class="button-container">
-      <button @click="restartGame" class="btn">Rejouer</button>
-      <button @click="goToSettings" class="btn">Nouvelle partie</button>
+      <button @click="$router.push('/')" class="btn">Menu</button>
       <button @click="toggleDarkMode" class="btn toggle-btn">
         {{ isDarkMode ? 'Mode Clair' : 'Mode Sombre' }}
       </button>

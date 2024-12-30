@@ -34,14 +34,13 @@ const handleSubmit = () => {
 
 <template>
 
-  <div class="u-flex u-flex-direction-column u-gap30">
+  <div class="u-flex u-flex-direction-column u-gap30 u-align-items-center w100">
 
-    <h1>2048</h1>
+    <h1 class="w100">2048</h1>
 
     <!-- Si l'utilisateur clique sur confirmer, on lance le jeu avec les paramètres qu'il a choisi -->
 
     <form @submit.prevent="handleSubmit" class="border u-flex u-flex-direction-column u-align-self-center u-gap20">
-
 
       <!-- Soit le jeu fini lorsque le bloc 2048 apparaît, soit le jeu est infini -->
 
@@ -95,11 +94,33 @@ const handleSubmit = () => {
       </div>
 
     </form>
+      <button class="button-leaderboard" @click="$router.push('/leaderboard')" >Classement</button>
+
   </div>
 
 </template>
 
 <style scoped>
+
+button {
+    width: 200px;
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #bbada0;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Effet de survol des boutons */
+button:hover {
+    background-color: #8f7a66;
+    transform: translateY(-2px);
+}
+
 
 .border {
   border: 1px solid lightgray;

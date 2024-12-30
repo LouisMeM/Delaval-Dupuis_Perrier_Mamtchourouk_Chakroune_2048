@@ -46,12 +46,18 @@ const isGameOver = computed(() => {
 });
 
 
-// Checks if the grid is full
+/**
+ * Checks if the grid is full
+ * @returns {boolean}
+ */
 function isGridFull() {
     return grid.value.every((row) => row.every((cell) => cell !== -1));
 }
 
-// Handles global movement logic
+/**
+ * Moves cells in the grid
+ * @param event
+ */
 function MoveCells(event : KeyboardEvent) {
     const gridCopy = JSON.stringify(grid.value);
 
@@ -78,7 +84,9 @@ function MoveCells(event : KeyboardEvent) {
     }
 }
 
-// Ensures all invalid empty cells are reset to -1
+/**
+ * Resets empty tiles to -1
+ */
 function ResetEmptyTiles() {
     grid.value.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
@@ -89,7 +97,9 @@ function ResetEmptyTiles() {
     });
 }
 
-// Moves tiles up
+/**
+ * Moves tiles up
+ */
 function MoveCellsUp() {
     for (let col = 0; col < gridSize; col++) {
         for (let row = 1; row < gridSize; row++) {
@@ -112,7 +122,9 @@ function MoveCellsUp() {
     }
 }
 
-// Moves tiles down
+/**
+ * Moves tiles down
+ */
 function MoveCellsDown() {
     for (let col = 0; col < gridSize; col++) {
         for (let row = gridSize - 2; row >= 0; row--) {
@@ -135,7 +147,9 @@ function MoveCellsDown() {
     }
 }
 
-// Moves tiles left
+/**
+ * Moves tiles left
+ */
 function MoveCellsLeft() {
     for (let row = 0; row < gridSize; row++) {
         for (let col = 1; col < gridSize; col++) {
@@ -157,8 +171,9 @@ function MoveCellsLeft() {
         }
     }
 }
-
-// Moves tiles right
+/**
+ * Moves tiles right
+ */
 function MoveCellsRight() {
     for (let row = 0; row < gridSize; row++) {
         for (let col = gridSize - 2; col >= 0; col--) {
@@ -181,7 +196,9 @@ function MoveCellsRight() {
     }
 }
 
-// Starts or restarts the game
+/**
+ * Starts a new game
+ */
 function StartGame() {
     grid.value = Array(gridSize)
         .fill(null)
@@ -197,7 +214,9 @@ function StartGame() {
     });
 }
 
-// Spawns a random tile
+/**
+ * Spawns a random cell in the grid
+ */
 function SpawnRandomCell() {
     if (isGridFull()) return;
     let emptyCells: any[] = [];
@@ -214,6 +233,10 @@ function SpawnRandomCell() {
     grid.value[randomCell.rowIndex][randomCell.colIndex] = Math.random() < 0.9 ? 2 : 4;
 }
 
+/**
+ * Handles key press events
+ * @param event
+ */
 function HandleKeyPress(event: KeyboardEvent) {
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
         return;
@@ -259,7 +282,7 @@ onMounted(() => {
             </div>
         </div>
 
-        <div class="back-to-menu-button u-noselect" @click="$router.push('/')">Retourner au menu</div>
+        <button class="back-to-menu-button u-noselect" @click="$router.push('/')">Retourner au menu</button>
     </div>
 </template>
 
@@ -271,17 +294,27 @@ onMounted(() => {
     width: 100vw;
     height: 100vh;
 
-    .back-to-menu-button{
-        position: fixed;
+    button {
+        position: absolute;
         top: 10px;
         left: 10px;
-        cursor: pointer;
-        padding: 5px 10px;
+        width: 200px;
+        padding: 10px 20px;
+        margin: 0 5px;
+        background-color: #bbada0;
+        color: black;
+        border: none;
         border-radius: 5px;
-        transition: background-color 0.3s;
-        background-color: #8f7a66;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
     }
 
+    /* Effet de survol des boutons */
+    button:hover {
+        background-color: #8f7a66;
+        transform: translateY(-2px);
+    }
 
     .game-statut {
         border-radius: 5px;
