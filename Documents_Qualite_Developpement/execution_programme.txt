@@ -9,4 +9,5 @@ Lancer le projet simplement :
 Pour lancer les tests unitaires :
 
 - Toujours dans le répertoire cloné.
+- Le programme ne doit pas être lancé avec `npm run dev` en même temps
 - npm run test
