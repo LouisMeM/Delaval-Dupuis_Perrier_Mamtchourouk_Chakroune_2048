@@ -69,3 +69,8 @@ Faites en un fork et poussez régulièrement le code source, la documentation, l
 -	npm install
 -	npm run dev
 
+### Lancer les tests unitaires :
+- Se rendre dans le repertoire cloné
+- npm install (si ce n'est pas déjà fait)
+- npm run test
+
