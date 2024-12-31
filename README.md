@@ -63,3 +63,9 @@ Faites en un fork et poussez régulièrement le code source, la documentation, l
 -	Je ne noterai pas en fonctions du jeu / de la difficulté choisie mais sur la qualité de code et les commentaires.
 -	Le langage de programmation étant au choix, je dois comprendre votre code avec les commentaires et la documentation technique.
 
+## Lancer le projet simplement :
+
+-	Se rendre dans le repertoire cloné.
+-	npm install
+-	npm run dev
+
