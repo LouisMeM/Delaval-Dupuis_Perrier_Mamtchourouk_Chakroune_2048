@@ -32,9 +32,6 @@
         "../*",
         "../*"
       ],
-      "nitropack/types": [
-        "../node_modules/nitropack/types"
-      ],
       "nitropack": [
         "../node_modules/nitropack"
       ],
@@ -71,6 +68,9 @@
       "nuxt": [
         "../node_modules/nuxt"
       ],
+      "#internal/nuxt/paths": [
+        "../node_modules/nuxt/dist/core/runtime/nitro/paths"
+      ],
       "~": [
         "./.."
       ],
@@ -83,9 +83,6 @@
       "@@": [
         "./.."
       ],
-      "#shared": [
-        "../shared"
-      ],
       "assets": [
         "../assets"
       ],
@@ -97,15 +94,6 @@
       ],
       "public/*": [
         "../public/*"
-      ],
-      "#build": [
-        "./"
-      ],
-      "#build/*": [
-        "./*"
-      ],
-      "#internal/nuxt/paths": [
-        "../node_modules/nuxt/dist/core/runtime/nitro/paths"
       ],
       "pinia": [
         "../node_modules/pinia/dist/pinia"

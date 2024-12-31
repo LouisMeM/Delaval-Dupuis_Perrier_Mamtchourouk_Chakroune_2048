@@ -2,9 +2,6 @@
 {
   "compilerOptions": {
     "paths": {
-      "nitropack/types": [
-        "../node_modules/nitropack/types"
-      ],
       "nitropack": [
         "../node_modules/nitropack"
       ],
@@ -65,9 +62,6 @@
       "@@/*": [
         "../*"
       ],
-      "#shared": [
-        "../shared"
-      ],
       "assets": [
         "../assets"
       ],
@@ -79,12 +73,6 @@
       ],
       "public/*": [
         "../public/*"
-      ],
-      "#build": [
-        "."
-      ],
-      "#build/*": [
-        "./*"
       ],
       "#app": [
         "../node_modules/nuxt/dist/app"
@@ -105,7 +93,13 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev.json"
+        "./manifest/meta/dev"
+      ],
+      "#build": [
+        "."
+      ],
+      "#build/*": [
+        "./*"
       ],
       "#components": [
         "./components"
