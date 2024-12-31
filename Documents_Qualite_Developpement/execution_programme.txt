@@ -5,3 +5,8 @@ Lancer le projet simplement :
 - Se rendre dans le répertoire cloné.
 - npm install
 - npm run dev
+
+Pour lancer les tests unitaires :
+
+- Toujours dans le répertoire cloné.
+- npm run test
