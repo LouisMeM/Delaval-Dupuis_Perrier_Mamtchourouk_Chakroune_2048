@@ -16,6 +16,7 @@
     "easytimer.js": "^4.6.0",
     "gsap": "^3.12.5",
     "nuxt": "^3.11.2",
+    "papaparse": "^5.4.1",
     "pinia": "^2.1.7",
     "pixi.js": "^8.4.1",
     "sass-loader": "^14.1.1",

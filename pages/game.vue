@@ -27,6 +27,10 @@ const isGameOver = computed(() => {
     for (let rowIndex = 0; rowIndex < grid.value.length; rowIndex++) {
         for (let colIndex = 0; colIndex < grid.value[rowIndex].length; colIndex++) {
             const cell = grid.value[rowIndex][colIndex];
+            if (gameType.value === '2048' && cell === 2048) {
+                timer.stop();
+                return true;
+            }
             if (
                 (rowIndex > 0 && cell === grid.value[rowIndex - 1][colIndex]) || // Check above
                 (rowIndex < grid.value.length - 1 && cell === grid.value[rowIndex + 1][colIndex]) || // Check below
@@ -42,12 +46,18 @@ const isGameOver = computed(() => {
 });
 
 
-// Checks if the grid is full
+/**
+ * Checks if the grid is full
+ * @returns {boolean}
+ */
 function isGridFull() {
     return grid.value.every((row) => row.every((cell) => cell !== -1));
 }
 
-// Handles global movement logic
+/**
+ * Moves cells in the grid
+ * @param event
+ */
 function MoveCells(event : KeyboardEvent) {
     const gridCopy = JSON.stringify(grid.value);
 
@@ -74,7 +84,9 @@ function MoveCells(event : KeyboardEvent) {
     }
 }
 
-// Ensures all invalid empty cells are reset to -1
+/**
+ * Resets empty tiles to -1
+ */
 function ResetEmptyTiles() {
     grid.value.forEach((row, rowIndex) => {
         row.forEach((col, colIndex) => {
@@ -85,7 +97,9 @@ function ResetEmptyTiles() {
     });
 }
 
-// Moves tiles up
+/**
+ * Moves tiles up
+ */
 function MoveCellsUp() {
     for (let col = 0; col < gridSize; col++) {
         for (let row = 1; row < gridSize; row++) {
@@ -97,10 +111,8 @@ function MoveCellsUp() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[target - 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[target - 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target - 1][col] * 2;
                     grid.value[target - 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -110,7 +122,9 @@ function MoveCellsUp() {
     }
 }
 
-// Moves tiles down
+/**
+ * Moves tiles down
+ */
 function MoveCellsDown() {
     for (let col = 0; col < gridSize; col++) {
         for (let row = gridSize - 2; row >= 0; row--) {
@@ -122,10 +136,8 @@ function MoveCellsDown() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[target + 1][col] === grid.value[target][col]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[target + 1][col] === grid.value[target][col]) {
                     score.value += grid.value[target + 1][col] * 2;
                     grid.value[target + 1][col] *= 2;
                     grid.value[target][col] = -1;
@@ -135,7 +147,9 @@ function MoveCellsDown() {
     }
 }
 
-// Moves tiles left
+/**
+ * Moves tiles left
+ */
 function MoveCellsLeft() {
     for (let row = 0; row < gridSize; row++) {
         for (let col = 1; col < gridSize; col++) {
@@ -147,10 +161,8 @@ function MoveCellsLeft() {
                     target--;
                 }
 
-                if (
-                    target > 0 &&
-                    grid.value[row][target - 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target > 0 && grid.value[row][target - 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target - 1] * 2;
                     grid.value[row][target - 1] *= 2;
                     grid.value[row][target] = -1;
@@ -159,8 +171,9 @@ function MoveCellsLeft() {
         }
     }
 }
-
-// Moves tiles right
+/**
+ * Moves tiles right
+ */
 function MoveCellsRight() {
     for (let row = 0; row < gridSize; row++) {
         for (let col = gridSize - 2; col >= 0; col--) {
@@ -172,10 +185,8 @@ function MoveCellsRight() {
                     target++;
                 }
 
-                if (
-                    target < gridSize - 1 &&
-                    grid.value[row][target + 1] === grid.value[row][target]
-                ) {
+                // Fusioning cells
+                if (target < gridSize - 1 && grid.value[row][target + 1] === grid.value[row][target]) {
                     score.value += grid.value[row][target + 1] * 2;
                     grid.value[row][target + 1] *= 2;
                     grid.value[row][target] = -1;
@@ -185,7 +196,9 @@ function MoveCellsRight() {
     }
 }
 
-// Starts or restarts the game
+/**
+ * Starts a new game
+ */
 function StartGame() {
     grid.value = Array(gridSize)
         .fill(null)
@@ -193,13 +206,17 @@ function StartGame() {
     score.value = 0;
     SpawnRandomCell();
     SpawnRandomCell();
+
+    // Timer
     timer.start();
     timer.addEventListener('secondsUpdated', function (e) {
         timerValue.value = timer.getTimeValues().toString();
     });
 }
 
-// Spawns a random tile
+/**
+ * Spawns a random cell in the grid
+ */
 function SpawnRandomCell() {
     if (isGridFull()) return;
     let emptyCells: any[] = [];
@@ -216,6 +233,10 @@ function SpawnRandomCell() {
     grid.value[randomCell.rowIndex][randomCell.colIndex] = Math.random() < 0.9 ? 2 : 4;
 }
 
+/**
+ * Handles key press events
+ * @param event
+ */
 function HandleKeyPress(event: KeyboardEvent) {
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
         return;
@@ -238,7 +259,7 @@ onMounted(() => {
         <div class="game-statut u-p20">
             <p class="game-score">Score : {{ score }}</p>
             <p class="game-timer">{{timerValue}}</p>
-            <p class="game-timer">Gamemode : 2048</p>
+            <p class="game-timer">Gamemode : {{gameType}}</p>
         </div>
         <div :class="`grid-container u-flex u-flex-direction-column u-p15 u-gap15 grid-scale-${gridSize}`" >
             <div class="u-flex u-gap15" v-for="rows in grid">
@@ -252,18 +273,48 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+
         <div v-if="isGameOver" class="game-over-window u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-noselect">
-            <p>Game over !</p>
-            <button @click="StartGame">Play again</button>
+            <div class="u-flex u-flex-direction-column u-justify-content-center u-align-items-center u-gap5">
+                <p>Partie terminée !</p>
+                <button @click="StartGame">Rejouer</button>
+                <button @click="$router.push('/')">Menu</button>
+            </div>
         </div>
+
+        <button class="back-to-menu-button u-noselect" @click="$router.push('/')">Retourner au menu</button>
     </div>
 </template>
 
 <style scoped lang="scss">
+
+
 .container {
     position: relative;
     width: 100vw;
     height: 100vh;
+
+    button {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px;
+        padding: 10px 20px;
+        margin: 0 5px;
+        background-color: #bbada0;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    /* Effet de survol des boutons */
+    button:hover {
+        background-color: #8f7a66;
+        transform: translateY(-2px);
+    }
 
     .game-statut {
         border-radius: 5px;
@@ -272,20 +323,39 @@ onMounted(() => {
 
 
     .game-over-window {
+        background-color: rgba(0, 0, 0, 0.5);
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 75px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
 
-        p {
-            font-size: 40px;
-        }
+        div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #bbada0;
+            border-radius: 5px;
+            padding: 60px 75px;
 
-        button {
-            font-size: 16px;
-            cursor: pointer;
+            p {
+                font-size: 32px;
+                text-transform: uppercase;
+            }
+
+            button {
+                font-size: 18px;
+                margin-top: 10px;
+                cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #8f7a66;
+                }
+            }
         }
     }
 }
